@@ -11,6 +11,7 @@ export function useWords() {
   const [loading, setLoading] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
   const [totalCount, setTotalCount] = useState(0)
+  const [mutating, setMutating] = useState(false)
 
   const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE)
 
@@ -68,9 +69,53 @@ export function useWords() {
     fetchWords()
   }
 
+  const addWord = async (word: string) => {
+    try {
+      setMutating(true)
+      const { error } = await supabase
+        .from('words')
+        .insert({ word })
+
+      if (error) {
+        console.error('Error adding word:', error)
+        throw error
+      }
+
+      await fetchWords()
+    } catch (error) {
+      console.error('Error:', error)
+      throw error
+    } finally {
+      setMutating(false)
+    }
+  }
+
+  const deleteWord = async (id: string) => {
+    try {
+      setMutating(true)
+      const { error } = await supabase
+        .from('words')
+        .delete()
+        .eq('id', id)
+
+      if (error) {
+        console.error('Error deleting word:', error)
+        throw error
+      }
+
+      await fetchWords()
+    } catch (error) {
+      console.error('Error:', error)
+      throw error
+    } finally {
+      setMutating(false)
+    }
+  }
+
   return {
     words,
     loading,
+    mutating,
     currentPage,
     totalPages,
     totalCount,
@@ -78,5 +123,7 @@ export function useWords() {
     goToPreviousPage,
     goToPage,
     refresh,
+    addWord,
+    deleteWord,
   }
 }
