@@ -56,6 +56,45 @@ export interface Database {
           updated_at?: string
         }
       }
+      decks: {
+        Row: {
+          id: string
+          user_id: string
+          name: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id?: string
+          name: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          name?: string
+          updated_at?: string
+        }
+      }
+      deck_flashcards: {
+        Row: {
+          id: string
+          deck_id: string
+          flashcard_id: string
+          position: number
+          added_at: string
+        }
+        Insert: {
+          id?: string
+          deck_id: string
+          flashcard_id: string
+          position?: number
+          added_at?: string
+        }
+        Update: {
+          position?: number
+        }
+      }
     }
     Views: {
       [_ in never]: never
