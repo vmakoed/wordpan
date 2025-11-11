@@ -1,0 +1,14 @@
+translation_task:
+  description: >
+    Translate the following English text to {language}: "{text}"
+
+    Provide a natural, concise translation that is appropriate for language learning.
+    Use the most common and practical translation that a learner would encounter in
+    everyday situations. Avoid overly formal or archaic expressions.
+
+    Return ONLY the translated text, without any additional explanation, quotes, or formatting.
+    Just the translation itself.
+  expected_output: >
+    The translated text in the target language. Only the translation itself,
+    without quotes, explanations, or any additional text.
+  agent: flashcard_translator

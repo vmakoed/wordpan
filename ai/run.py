@@ -10,6 +10,8 @@ from supabase import create_client, Client
 
 from crews.random_phrase_crew.crew import RandomPhraseCrew
 from crews.random_phrase_crew.schemas import PhraseOutput
+from crews.translate_flashcard.crew import TranslateFlashcardCrew
+from crews.translate_flashcard.schemas import TranslationOutput
 
 from lib.tracer import traceable
 
@@ -122,6 +124,78 @@ async def generate_random_phrase(words: list[str], user_context: str) -> PhraseO
 async def health():
     """Health check endpoint."""
     return jsonify({"status": "healthy"}), 200
+
+
+@traceable
+async def translate_flashcard(text: str, language: str) -> TranslationOutput:
+    """
+    Translate English text to the target language.
+
+    Args:
+        text: The English text to translate
+        language: The target language code (e.g., 'es', 'fr', 'de')
+
+    Returns:
+        TranslationOutput with the translated text
+    """
+    inputs = {
+        'text': text,
+        'language': language
+    }
+
+    result = await TranslateFlashcardCrew().crew().kickoff_async(inputs=inputs)
+
+    # CrewAI returns a result with a .pydantic attribute containing the Pydantic model
+    if hasattr(result, 'pydantic'):
+        return result.pydantic
+
+    # Fallback - return a basic TranslationOutput
+    return TranslationOutput(translation=str(result))
+
+
+@app.route("/api/translate-flashcard", methods=["POST"])
+@require_auth
+async def translate_flashcard_endpoint():
+    """
+    Translate flashcard text from English to target language.
+
+    Request body:
+        {
+            "text": "English text to translate",
+            "language": "es"
+        }
+
+    Headers:
+        Authorization: Bearer <jwt_token>
+
+    Response:
+        {
+            "translation": "translated text"
+        }
+    """
+    try:
+        # Get data from request body
+        data = request.get_json()
+
+        if not data or "text" not in data or "language" not in data:
+            return jsonify({"error": "Request body must include 'text' and 'language'"}), 400
+
+        text = data.get("text", "").strip()
+        language = data.get("language", "").strip()
+
+        if not text:
+            return jsonify({"error": "'text' cannot be empty"}), 400
+
+        if not language:
+            return jsonify({"error": "'language' cannot be empty"}), 400
+
+        # Translate the text
+        result = await translate_flashcard(text, language)
+
+        return jsonify(result.model_dump()), 200
+
+    except Exception as e:
+        return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
 
 @app.route("/api/random-phrase", methods=["POST"])

@@ -8,11 +8,13 @@ import SignUpPage from './pages/signup'
 import WordsPage from './pages/words'
 import FlashcardsPage from './pages/flashcards'
 import RandomPhrasePage from './pages/random-phrase'
+import { Toaster } from './components/ui/sonner'
 
 function App() {
   return (
     <BrowserRouter>
       <UserProvider>
+        <Toaster />
         <Routes>
           {/* Auth routes with /auth prefix */}
           <Route path="/auth" element={<AuthLayout />}>

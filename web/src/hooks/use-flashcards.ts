@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
+import { translateFlashcard } from '@/lib/ai-service'
 import type { Database } from '@/lib/database.types'
 
 type Flashcard = Database['public']['Tables']['flashcards']['Row']
@@ -89,12 +90,12 @@ export function useFlashcards() {
     fetchFlashcards()
   }
 
-  const addFlashcard = async (front: string, back: string) => {
+  const addFlashcard = async (front: string, back: string | null, language: string) => {
     try {
       setMutating(true)
       const { error } = await supabase
         .from('flashcards')
-        .insert({ front, back })
+        .insert({ front, back, language })
 
       if (error) {
         console.error('Error adding flashcard:', error)
@@ -157,6 +158,20 @@ export function useFlashcards() {
     }
   }
 
+  const translateFlashcardAI = async (flashcard: Flashcard): Promise<string> => {
+    try {
+      const result = await translateFlashcard(flashcard.front, flashcard.language)
+
+      // Update the flashcard with the translation
+      await updateFlashcard(flashcard.id, { back: result.translation })
+
+      return result.translation
+    } catch (error) {
+      console.error('Error translating flashcard:', error)
+      throw error
+    }
+  }
+
   return {
     flashcards,
     loading,
@@ -174,5 +189,6 @@ export function useFlashcards() {
     addFlashcard,
     updateFlashcard,
     deleteFlashcard,
+    translateFlashcardAI,
   }
 }
