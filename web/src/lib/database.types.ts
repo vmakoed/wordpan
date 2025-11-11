@@ -35,7 +35,8 @@ export interface Database {
           id: string
           user_id: string
           front: string
-          back: string
+          back: string | null
+          language: string
           created_at: string
           updated_at: string
         }
@@ -43,13 +44,15 @@ export interface Database {
           id?: string
           user_id?: string
           front: string
-          back: string
+          back?: string | null
+          language?: string
           created_at?: string
           updated_at?: string
         }
         Update: {
           front?: string
-          back?: string
+          back?: string | null
+          language?: string
           updated_at?: string
         }
       }
