@@ -46,6 +46,11 @@ const data = {
       icon: IconCards,
     },
     {
+      name: "Decks",
+      url: "/decks",
+      icon: IconCards,
+    },
+    {
       name: "Random Phrase",
       url: "/random-phrase",
       icon: IconSparkles,

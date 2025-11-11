@@ -7,6 +7,8 @@ import LoginPage from './pages/login'
 import SignUpPage from './pages/signup'
 import WordsPage from './pages/words'
 import FlashcardsPage from './pages/flashcards'
+import DecksPage from './pages/decks'
+import DeckDetailPage from './pages/deck-detail'
 import RandomPhrasePage from './pages/random-phrase'
 import { Toaster } from './components/ui/sonner'
 
@@ -27,6 +29,8 @@ function App() {
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/words" element={<WordsPage />} />
             <Route path="/flashcards" element={<FlashcardsPage />} />
+            <Route path="/decks" element={<DecksPage />} />
+            <Route path="/decks/:id" element={<DeckDetailPage />} />
             <Route path="/random-phrase" element={<RandomPhrasePage />} />
           </Route>
 
