@@ -55,6 +55,8 @@ export function LearningDialog({
   }
 
   const handleAnswer = (answer: Answer) => {
+    if (!currentCard) return
+
     // Record the answer
     const newAnswers = new Map(answers)
     newAnswers.set(currentCard.id, answer)
