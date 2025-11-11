@@ -21,8 +21,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { ArrowLeft, Trash2, Plus } from 'lucide-react'
+import { ArrowLeft, Trash2, Plus, GraduationCap } from 'lucide-react'
 import { toast } from 'sonner'
+import { LearningDialog } from '@/components/learning-dialog'
 
 type Deck = Database['public']['Tables']['decks']['Row']
 type Flashcard = Database['public']['Tables']['flashcards']['Row']
@@ -54,6 +55,7 @@ export default function DeckDetailPage() {
   const [availableFlashcards, setAvailableFlashcards] = useState<Flashcard[]>([])
   const [selectedFlashcardId, setSelectedFlashcardId] = useState<string>('')
   const [searchQuery, setSearchQuery] = useState('')
+  const [learningDialogOpen, setLearningDialogOpen] = useState(false)
 
   const {
     flashcards,
@@ -223,6 +225,16 @@ export default function DeckDetailPage() {
                 {deck.name}
               </CardTitle>
             )}
+            {flashcards.length > 0 && (
+              <Button
+                onClick={() => setLearningDialogOpen(true)}
+                className="ml-auto gap-2"
+                size="sm"
+              >
+                <GraduationCap className="h-4 w-4" />
+                Learn
+              </Button>
+            )}
           </div>
           <CardDescription>
             Manage flashcards in this deck ({flashcards.length} flashcards)
@@ -328,6 +340,13 @@ export default function DeckDetailPage() {
           )}
         </CardContent>
       </Card>
+
+      <LearningDialog
+        isOpen={learningDialogOpen}
+        onClose={() => setLearningDialogOpen(false)}
+        flashcards={flashcards}
+        deckName={deck.name}
+      />
     </div>
   )
 }
