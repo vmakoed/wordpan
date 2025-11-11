@@ -30,6 +30,29 @@ export interface Database {
           created_at?: string
         }
       }
+      flashcards: {
+        Row: {
+          id: string
+          user_id: string
+          front: string
+          back: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id?: string
+          front: string
+          back: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          front?: string
+          back?: string
+          updated_at?: string
+        }
+      }
     }
     Views: {
       [_ in never]: never
